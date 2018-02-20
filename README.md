@@ -39,3 +39,10 @@ SUBCOMMANDS:
     list         Shows a list of people in the database.
     remove       Remove someone from the database.
 ```
+
+
+### Configuration
+It's possible to configure the database path that `rusday` uses by setting the
+environment variable `RUSDAY_DB_PATH`. In case this isn't set, `rusday` will
+check for `XDG_DATA_HOME`, and store it in a file named `rusday.db` if present.
+By ´default, the database is stored in `~/.local/share/rusday.db`.
