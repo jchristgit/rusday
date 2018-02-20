@@ -2,9 +2,7 @@ extern crate chrono;
 extern crate rusqlite;
 
 use chrono::NaiveDate;
-use rusqlite::Connection;
-use std::env;
-
+use common::get_db_conn;
 
 
 #[derive(Debug)]
@@ -16,9 +14,7 @@ pub struct Person {
 
 
 pub fn add_entry(date: &str, name: &str) {
-    let mut db_path_buf = env::home_dir().unwrap();
-    db_path_buf.push(".local/share/rusday");
-    let conn = Connection::open(db_path_buf.as_path()).unwrap();
+    let conn = get_db_conn();
     conn.execute("CREATE TABLE IF NOT EXISTS person (
         id      INTEGER PRIMARY KEY,
         date    DATE NOT NULL,

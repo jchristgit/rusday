@@ -3,14 +3,11 @@ extern crate rusqlite;
 
 
 use add::Person;
-use std::env;
-use rusqlite::Connection;
+use common::get_db_conn;
 
 
 pub fn list_entries() {
-    let mut db_path_buf = env::home_dir().unwrap();
-    db_path_buf.push(".local/share/rusday");
-    let conn = Connection::open(db_path_buf.as_path()).unwrap();
+    let conn = get_db_conn();
     let mut stmt = conn.prepare("SELECT id, date, name FROM person").unwrap();
     let person_iter = stmt.query_map(&[], |row| {
         Person {

@@ -5,6 +5,7 @@ extern crate rusqlite;
 use clap::{App, Arg, SubCommand};
 
 mod add;
+mod common;
 mod dashboard;
 mod list;
 
