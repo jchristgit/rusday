@@ -8,6 +8,7 @@ mod add;
 mod common;
 mod dashboard;
 mod list;
+mod remove;
 
 
 fn main() {
@@ -26,6 +27,11 @@ fn main() {
                     .about("Shows a list of people in the database."))
         .subcommand(SubCommand::with_name("dashboard")
                     .about("Shows a dashboard with the most relevant information."))
+        .subcommand(SubCommand::with_name("remove")
+                    .about("Remove someone from the database.")
+                    .arg(Arg::with_name("name")
+                         .help("the name of the person to remove")
+                         .required(true)))
         .get_matches();
 
     match matches.subcommand_name() {
@@ -40,6 +46,11 @@ fn main() {
         Some("list") => {
             list::list_entries();
         },
+        Some("remove") => {
+            if let Some(ref matches) = matches.subcommand_matches("remove") {
+                remove::remove_entry(matches.value_of("name").unwrap());
+            }
+        }
         None => println!("No subcommand was used."),
         _ => println!("Some other subcommand was used.")
     }
