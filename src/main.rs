@@ -17,12 +17,12 @@ fn main() {
                     .about("Adds someone to the database.")
                     .arg(Arg::with_name("date")
                          .help("a date string in the format dd-mm-yyyy")
-                         .index(1)
-                         .required(true))
+                         .required(true)
+                         .empty_values(false))
                     .arg(Arg::with_name("name")
                          .help("the name of the person to add")
-                         .index(2)
-                         .required(true)))
+                         .required(true)
+                         .empty_values(false)))
         .subcommand(SubCommand::with_name("list")
                     .about("Shows a list of people in the database."))
         .subcommand(SubCommand::with_name("dashboard")
@@ -31,7 +31,8 @@ fn main() {
                     .about("Remove someone from the database.")
                     .arg(Arg::with_name("name")
                          .help("the name of the person to remove")
-                         .required(true)))
+                         .required(true)
+                         .empty_values(false)))
         .get_matches();
 
     match matches.subcommand_name() {
