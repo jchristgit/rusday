@@ -13,6 +13,7 @@ mod remove;
 
 fn main() {
     let matches = App::new("rusday")
+        .about("A CLI tool to help you remember your friends' birthdays.")
         .subcommand(SubCommand::with_name("add")
                     .about("Adds someone to the database.")
                     .arg(Arg::with_name("date")
