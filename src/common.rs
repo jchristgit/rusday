@@ -6,8 +6,8 @@ use std::process;
 use rusqlite::Connection;
 
 
-pub fn get_db_conn() -> rusqlite::Connection {
-    let db_path = match env::var_os("RUSDAY_DB_PATH") {
+fn get_db_path() -> PathBuf {
+    match env::var_os("RUSDAY_DB_PATH") {
         Some(val) => PathBuf::from(val),
         None => {
             match env::var_os("XDG_DATA_HOME") {
@@ -23,8 +23,12 @@ pub fn get_db_conn() -> rusqlite::Connection {
                 } 
             }
         }
-    };
+    }
+}
 
+
+pub fn get_db_conn() -> rusqlite::Connection {
+    let db_path = get_db_path();
     match Connection::open(db_path.as_path()) {
         Ok(conn) => {
             conn.execute("CREATE TABLE IF NOT EXISTS person (
@@ -38,5 +42,31 @@ pub fn get_db_conn() -> rusqlite::Connection {
             eprintln!("Failed to establish a database connection: {}", e);
             process::exit(1);
         }
+    }
+}
+
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_db_path_with_set_rusday_db_path() {
+        env::set_var("RUSDAY_DB_PATH", ":memory:");
+        assert_eq!(get_db_path(), PathBuf::from(":memory:"));
+
+        env::set_var("RUSDAY_DB_PATH", "/home/user/data/rusday.db");
+        assert_eq!(get_db_path(), PathBuf::from("/home/user/data/rusday.db"));
+
+        env::remove_var("RUSDAY_DB_PATH");
+    }
+
+    #[test]
+    fn get_db_path_with_set_xdg_data_home() {
+        env::set_var("XDG_DATA_HOME", "/home/user/data/");
+        assert_eq!(get_db_path(), PathBuf::from("/home/user/data/rusday.db"));
+
+        env::remove_var("XDG_DATA_HOME");
     }
 }

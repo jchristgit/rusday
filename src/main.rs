@@ -3,6 +3,7 @@ extern crate clap;
 extern crate rusqlite;
 
 use clap::{App, Arg, SubCommand};
+use common::get_db_conn;
 
 mod add;
 mod common;
@@ -36,24 +37,25 @@ fn main() {
                          .empty_values(false)))
         .get_matches();
 
-    match matches.subcommand_name() {
+    let conn = get_db_conn();
+    let cmd_result = match matches.subcommand_name() {
         Some("add") => {
-            if let Some(ref matches) = matches.subcommand_matches("add") {
-                add::add_entry(matches.value_of("date").unwrap(), matches.value_of("name").unwrap());
-            }
+            let matches = matches.subcommand_matches("add").unwrap();
+            add::add_entry(&conn, matches.value_of("date").unwrap(), matches.value_of("name").unwrap())
         },
-        Some("dashboard") => {
-            dashboard::show_dashboard();
-        }
-        Some("list") => {
-            list::list_entries();
-        },
+        Some("dashboard") => dashboard::show_dashboard(&conn),
+        Some("list") => list::list_entries(&conn),
         Some("remove") => {
-            if let Some(ref matches) = matches.subcommand_matches("remove") {
-                remove::remove_entry(matches.value_of("name").unwrap());
-            }
-        }
-        None => println!("No subcommand was used."),
-        _ => println!("Some other subcommand was used.")
+            let matches = matches.subcommand_matches("remove").unwrap();
+            remove::remove_entry(&conn, matches.value_of("name").unwrap())
+        },
+        None => Err(format!("No subcommand was used.")),
+        _ => unreachable!()
+    };
+
+    if let Ok(msg) = cmd_result {
+        println!("{}", msg)
+    } else {
+        eprintln!("{}", cmd_result.err().unwrap())
     }
 }

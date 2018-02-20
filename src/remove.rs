@@ -1,21 +1,63 @@
 extern crate rusqlite;
 
-use common::get_db_conn;
+use rusqlite::Connection;
 
 
-pub fn remove_entry(name: &str) {
-    let conn = get_db_conn();
+pub fn remove_entry(conn: &Connection, name: &str) -> Result<String, String> {
     match conn.execute("DELETE FROM person WHERE name = ?1", &[&name]) {
         Ok(changed_rows) => {
             if changed_rows == 0 {
-                eprintln!("Failed to find anyone named `{}` in the database...", name);
+                Err(format!("Failed to find anyone named `{}` in the database...", name))
             } else {
-                println!("Successfully removed `{}` from the database.", name);
+                Ok(format!("Successfully removed `{}` from the database.", name))
             }
         },
         Err(e) => {
-            eprintln!("Failed to remove `{}`: {}", name, e);
+            Err(format!("Failed to remove `{}`: {}", name, e))
         }
     }
-    let _ = conn.close();
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env;
+    use add::add_entry;
+    use common::get_db_conn;
+
+    #[test]
+    fn returns_err_with_no_entries() {
+        env::set_var("RUSDAY_DB_PATH", ":memory:");
+        let conn = get_db_conn();
+
+        assert!(remove_entry(&conn, "Marc").is_err());
+
+        let _ = conn.close();
+        env::remove_var("RUSDAY_DB_PATH");
+    }
+
+    #[test]
+    fn returns_err_with_no_matching_entry() {
+        env::set_var("RUSDAY_DB_PATH", ":memory:");
+        let conn = get_db_conn();
+
+        assert!(add_entry(&conn, "01-01-1900", "Marc").is_ok());
+        assert!(remove_entry(&conn, "John").is_err());
+
+        let _ = conn.close();
+        env::remove_var("RUSDAY_DB_PATH");
+    }
+
+    #[test]
+    fn returns_ok_with_matching_entry() {
+        env::set_var("RUSDAY_DB_PATH", ":memory:");
+        let conn = get_db_conn();
+
+        assert!(add_entry(&conn, "01-01-1900", "Marc").is_ok());
+        assert!(remove_entry(&conn, "Marc").is_ok());
+
+        let _ = conn.close();
+        env::remove_var("RUSDAY_DB_PATH");
+    }
 }
