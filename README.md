@@ -2,6 +2,7 @@
 `rusday` is a command line application intended to help you remember your friends' birthdays.
 I primarly made this project to learn Rust, but also because I've got to known a couple of awesome
 people through programming over the past couple months and wanted to ensure that I don't forget their birthdays.
+One may argue about the practical use of this, but I like to think that it's a nice thing.
 
 ### Installation
 Installation is easy thanks to `cargo`:
@@ -39,6 +40,17 @@ SUBCOMMANDS:
     list         Shows a list of people in the database.
     remove       Remove someone from the database.
 ```
+
+### Commands
+- `rusday help` gives the expected output showing the other commands.
+- `rusday add <DATE> <NAME>` is used to add someone to the database.
+`<DATE>` is expected to be in the format `dd-mm-yyyy`.
+- `rusday remove <NAME>` is used to remove someone from the database.
+It checks for an exact match of the name.
+- `rusday list` shows you everyone that's currently in the database, sorted by their birthdate.
+- `rusday dashboard` shows you who's birthday is on the current date.
+
+Have an idea for a command? Open an issue and let me know!
 
 
 ### Configuration
