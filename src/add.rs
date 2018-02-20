@@ -23,7 +23,7 @@ pub fn add_entry(date: &str, name: &str) {
         };
         conn.execute("INSERT INTO person (date, name) VALUES (?1, ?2)", &[&new_entry.date, &new_entry.name]).unwrap();
     } else {
-        eprintln!("Failed to parse a date from {}. Are you sure it's formatted correctly?", date);
+        eprintln!("Failed to parse a date from `{}`. Are you sure it's formatted correctly?", date);
     }
     let _ = conn.close();
 }
