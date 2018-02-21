@@ -7,13 +7,10 @@ use rusqlite::Connection;
 
 
 pub fn add_entry(conn: &Connection, date: &str, name: &str) -> Result<String, String> {
-    if let Ok(naive_date) = NaiveDate::parse_from_str(date, "%d-%m-%Y") {
-        let new_entry = Person::from_args(naive_date, name);
-        conn.execute("INSERT INTO person (date, name) VALUES (?1, ?2)", &[&new_entry.date, &new_entry.name]).unwrap();
-        Ok(format!("Successfully added `{}` to the database.", name))
-    } else {
-        Err(format!("Failed to parse a date from `{}`. Are you sure it's formatted correctly?", date))
-    }
+    let naive_date = NaiveDate::parse_from_str(date, "%d-%m-%Y").unwrap();
+    let new_entry = Person::from_args(naive_date, name);
+    conn.execute("INSERT INTO person (date, name) VALUES (?1, ?2)", &[&new_entry.date, &new_entry.name]).unwrap();
+    Ok(format!("Successfully added `{}` to the database.", name))
 }
 
 
@@ -38,16 +35,6 @@ mod tests {
         let conn = get_db_conn();
 
         assert!(add_entry(&conn, "01-01-1990", "Marc").is_ok());
-
-        env::remove_var("RUSDAY_DB_PATH");
-    }
-
-    #[test]
-    fn invalid_date_returns_err() {
-        env::set_var("RUSDAY_DB_PATH", ":memory:");
-        let conn = get_db_conn();
-
-        assert!(add_entry(&conn, "invalid", "Marc").is_err());
 
         env::remove_var("RUSDAY_DB_PATH");
     }

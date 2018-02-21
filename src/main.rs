@@ -3,7 +3,7 @@ extern crate clap;
 extern crate rusday;
 
 use clap::{App, Arg, SubCommand};
-use rusday::{add_entry, remove_entry, get_db_conn, show_dashboard, list_entries};
+use rusday::{add_entry, remove_entry, get_db_conn, show_dashboard, list_entries, is_valid_date};
 
 
 fn main() {
@@ -15,7 +15,8 @@ fn main() {
                     .arg(Arg::with_name("date")
                          .help("a date string in the format dd-mm-yyyy")
                          .required(true)
-                         .empty_values(false))
+                         .empty_values(false)
+                         .validator(is_valid_date))
                     .arg(Arg::with_name("name")
                          .help("the name of the person to add")
                          .required(true)
