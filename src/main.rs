@@ -1,20 +1,15 @@
-extern crate chrono;
+#[macro_use]
 extern crate clap;
-extern crate rusqlite;
+extern crate rusday;
 
 use clap::{App, Arg, SubCommand};
-use common::get_db_conn;
-
-mod add;
-mod common;
-mod dashboard;
-mod list;
-mod remove;
+use rusday::{add_entry, remove_entry, get_db_conn, show_dashboard, list_entries};
 
 
 fn main() {
     let matches = App::new("rusday")
         .about("A CLI tool to help you remember your friends' birthdays.")
+        .version(crate_version!())
         .subcommand(SubCommand::with_name("add")
                     .about("Adds someone to the database.")
                     .arg(Arg::with_name("date")
@@ -41,13 +36,13 @@ fn main() {
     let cmd_result = match matches.subcommand_name() {
         Some("add") => {
             let matches = matches.subcommand_matches("add").unwrap();
-            add::add_entry(&conn, matches.value_of("date").unwrap(), matches.value_of("name").unwrap())
+            add_entry(&conn, matches.value_of("date").unwrap(), matches.value_of("name").unwrap())
         },
-        Some("dashboard") => dashboard::show_dashboard(&conn),
-        Some("list") => list::list_entries(&conn),
+        Some("dashboard") => show_dashboard(&conn),
+        Some("list") => list_entries(&conn),
         Some("remove") => {
             let matches = matches.subcommand_matches("remove").unwrap();
-            remove::remove_entry(&conn, matches.value_of("name").unwrap())
+            remove_entry(&conn, matches.value_of("name").unwrap())
         },
         None => Err("No subcommand was used.".to_string()),
         _ => unreachable!()
