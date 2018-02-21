@@ -49,7 +49,7 @@ fn main() {
             let matches = matches.subcommand_matches("remove").unwrap();
             remove::remove_entry(&conn, matches.value_of("name").unwrap())
         },
-        None => Err(format!("No subcommand was used.")),
+        None => Err("No subcommand was used.".to_string()),
         _ => unreachable!()
     };
 

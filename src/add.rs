@@ -2,25 +2,8 @@ extern crate chrono;
 extern crate rusqlite;
 
 use chrono::NaiveDate;
+use common::Person;
 use rusqlite::Connection;
-
-
-#[derive(Debug)]
-pub struct Person {
-    pub id: i32,
-    pub date: NaiveDate,
-    pub name: String
-}
-
-impl Person {
-    fn from_args(date: NaiveDate, name: &str) -> Person {
-        Person {
-            id: 0,
-            date: date,
-            name: String::from(name)
-        }
-    }
-}
 
 
 pub fn add_entry(conn: &Connection, date: &str, name: &str) -> Result<String, String> {
@@ -57,7 +40,6 @@ mod tests {
         assert!(add_entry(&conn, "01-01-1990", "Marc").is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
-        let _ = conn.close();
     }
 
     #[test]
@@ -68,6 +50,5 @@ mod tests {
         assert!(add_entry(&conn, "invalid", "Marc").is_err());
 
         env::remove_var("RUSDAY_DB_PATH");
-        let _ = conn.close();
     }
 }

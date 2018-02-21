@@ -1,10 +1,27 @@
 extern crate rusqlite;
 
+use chrono::NaiveDate;
 use std::env;
 use std::path::PathBuf;
 use std::process;
 use rusqlite::Connection;
 
+
+pub struct Person {
+    pub id: i32,
+    pub date: NaiveDate,
+    pub name: String
+}
+
+impl Person {
+    pub fn from_args(date: NaiveDate, name: &str) -> Person {
+        Person {
+            id: 0,
+            date: date,
+            name: String::from(name)
+        }
+    }
+}
 
 fn get_db_path() -> PathBuf {
     match env::var_os("RUSDAY_DB_PATH") {

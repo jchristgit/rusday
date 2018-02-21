@@ -2,7 +2,7 @@ extern crate chrono;
 extern crate rusqlite;
 
 
-use add::Person;
+use common::Person;
 use chrono::prelude::*;
 use rusqlite::Connection;
 
@@ -41,6 +41,5 @@ mod tests {
         assert!(show_dashboard(&conn).is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
-        let _ = conn.close();
     }
 }

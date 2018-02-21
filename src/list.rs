@@ -1,8 +1,7 @@
 extern crate chrono;
 extern crate rusqlite;
 
-
-use add::Person;
+use common::Person;
 use rusqlite::Connection;
 
 
@@ -18,7 +17,7 @@ pub fn list_entries(conn: &Connection) -> Result<String, String> {
     let mut persons: Vec<_> = person_iter.map(|r| r.unwrap()).collect();
     persons.sort_by_key(|p| p.date);
     for person in persons {
-        println!("{:>20}: {}", person.name, person.date);
+        println!("{:>30}: {}", person.name, person.date);
     };
 
     Ok(format!(""))
@@ -39,6 +38,5 @@ mod tests {
         assert!(list_entries(&conn).is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
-        let _ = conn.close();
     }
 }

@@ -33,7 +33,6 @@ mod tests {
 
         assert!(remove_entry(&conn, "Marc").is_err());
 
-        let _ = conn.close();
         env::remove_var("RUSDAY_DB_PATH");
     }
 
@@ -45,7 +44,6 @@ mod tests {
         assert!(add_entry(&conn, "01-01-1900", "Marc").is_ok());
         assert!(remove_entry(&conn, "John").is_err());
 
-        let _ = conn.close();
         env::remove_var("RUSDAY_DB_PATH");
     }
 
@@ -57,7 +55,6 @@ mod tests {
         assert!(add_entry(&conn, "01-01-1900", "Marc").is_ok());
         assert!(remove_entry(&conn, "Marc").is_ok());
 
-        let _ = conn.close();
         env::remove_var("RUSDAY_DB_PATH");
     }
 }
