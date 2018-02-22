@@ -8,18 +8,22 @@ use chrono::NaiveDate;
 use common::Person;
 use rusqlite::Connection;
 
-
 pub fn add_entry(conn: &Connection, date: &str, name: &str, color: bool) -> Result<String, String> {
     let naive_date = NaiveDate::parse_from_str(date, "%d-%m-%Y").unwrap();
     let new_entry = Person::from_args(naive_date, name);
-    conn.execute("INSERT INTO person (date, name) VALUES (?1, ?2)", &[&new_entry.date, &new_entry.name]).unwrap();
+    conn.execute(
+        "INSERT INTO person (date, name) VALUES (?1, ?2)",
+        &[&new_entry.date, &new_entry.name],
+    ).unwrap();
     if color {
-        Ok(format!("Successfully added `{}` to the database.", Style::new().bold().paint(name)))
+        Ok(format!(
+            "Successfully added `{}` to the database.",
+            Style::new().bold().paint(name)
+        ))
     } else {
         Ok(format!("Successfully added `{}` to the database.", name))
     }
 }
-
 
 #[cfg(test)]
 mod tests {

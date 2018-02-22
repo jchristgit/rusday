@@ -6,10 +6,12 @@ pub fn is_valid_date(s: String) -> Result<(), String> {
     if NaiveDate::parse_from_str(s.as_str(), "%d-%m-%Y").is_ok() {
         Ok(())
     } else {
-        Err(format!("Failed to parse a date from `{}`. Are you sure it's formatted correctly?", s))
+        Err(format!(
+            "Failed to parse a date from `{}`. Are you sure it's formatted correctly?",
+            s
+        ))
     }
 }
-
 
 #[cfg(test)]
 mod tests {

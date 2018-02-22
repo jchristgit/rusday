@@ -4,26 +4,44 @@ extern crate rusqlite;
 use self::ansi_term::Style;
 use rusqlite::Connection;
 
-
 pub fn remove_entry(conn: &Connection, name: &str, color: bool) -> Result<String, String> {
     match conn.execute("DELETE FROM person WHERE name = ?1", &[&name]) {
         Ok(changed_rows) => {
             if changed_rows == 0 {
-                Err(format!("Failed to find anyone named `{}` in the database...",
-                            if color { Style::new().bold().paint(name).to_string() } else { name.to_string() }))
+                Err(format!(
+                    "Failed to find anyone named `{}` in the database...",
+                    if color {
+                        Style::new().bold().paint(name).to_string()
+                    } else {
+                        name.to_string()
+                    }
+                ))
             } else {
-                Ok(format!("Successfully removed `{}` from the database.",
-                           if color { Style::new().bold().paint(name).to_string() } else { name.to_string() }))
+                Ok(format!(
+                    "Successfully removed `{}` from the database.",
+                    if color {
+                        Style::new().bold().paint(name).to_string()
+                    } else {
+                        name.to_string()
+                    }
+                ))
             }
-        },
-        Err(e) => {
-            Err(format!("Failed to remove `{}`: {}",
-                        if color { Style::new().bold().paint(name).to_string() } else { name.to_string() },
-                        if color { Style::new().italic().paint(e.to_string()).to_string() } else { e.to_string() }))
         }
+        Err(e) => Err(format!(
+            "Failed to remove `{}`: {}",
+            if color {
+                Style::new().bold().paint(name).to_string()
+            } else {
+                name.to_string()
+            },
+            if color {
+                Style::new().italic().paint(e.to_string()).to_string()
+            } else {
+                e.to_string()
+            }
+        )),
     }
 }
-
 
 #[cfg(test)]
 mod tests {
