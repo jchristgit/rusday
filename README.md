@@ -23,15 +23,18 @@ to ensure I get informed about anyone's birthday when I open my Terminal.
 
 ```sh
 $ rusday help
-rusday
+rusday 0.3.0
 A CLI tool to help you remember your friends' birthdays.
 
 USAGE:
-    rusday [SUBCOMMAND]
+    rusday [OPTIONS] [SUBCOMMAND]
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+OPTIONS:
+    -c, --color <color>    when to use colored / formatted output [default: auto]  [values: auto, always, never]
 
 SUBCOMMANDS:
     add          Adds someone to the database.
