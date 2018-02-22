@@ -1,11 +1,13 @@
+extern crate ansi_term;
 extern crate chrono;
 extern crate rusqlite;
 
+use self::ansi_term::Style;
 use common::Person;
 use rusqlite::Connection;
 
 
-pub fn list_entries(conn: &Connection) -> Result<String, String> {
+pub fn list_entries(conn: &Connection, color: bool) -> Result<String, String> {
     let mut stmt = conn.prepare("SELECT id, date, name FROM person").unwrap();
     let person_iter = stmt.query_map(&[], |row| {
         Person {
@@ -17,7 +19,15 @@ pub fn list_entries(conn: &Connection) -> Result<String, String> {
     let mut persons: Vec<_> = person_iter.map(|r| r.unwrap()).collect();
     persons.sort_by_key(|p| p.date);
     for person in persons {
-        println!("{:>30}: {}", person.name, person.date);
+        if color {
+            println!(
+                "{}{:>30}{}: {}",
+                Style::new().italic().prefix(), person.name, Style::new().italic().suffix(),
+                person.date
+            );
+        } else {
+            println!("{:>30}: {}", person.name, person.date);
+        }
     };
 
     Ok(format!(""))
@@ -35,7 +45,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(list_entries(&conn).is_ok());
+        assert!(list_entries(&conn, false).is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
     }

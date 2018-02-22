@@ -1,13 +1,15 @@
+extern crate ansi_term;
 extern crate chrono;
 extern crate rusqlite;
 
 
+use self::ansi_term::Style;
 use common::Person;
 use chrono::prelude::*;
 use rusqlite::Connection;
 
 
-pub fn show_dashboard(conn: &Connection) -> Result<String, String> {
+pub fn show_dashboard(conn: &Connection, color: bool) -> Result<String, String> {
     let dt = Local::now();
     let mut stmt = conn.prepare("SELECT id, date, name FROM person WHERE strftime('%d', date) = strftime('%d', ?1) AND strftime('%m', date) = strftime('%m', ?1)").unwrap();
     let person_iter = stmt.query_map(&[&dt], |row| {
@@ -19,7 +21,11 @@ pub fn show_dashboard(conn: &Connection) -> Result<String, String> {
     }).unwrap();
     for person in person_iter {
         let unwrapped = person.unwrap();
-        println!("Today is {}'s {}. birthday.", unwrapped.name, dt.year() - unwrapped.date.year());
+        println!(
+            "Today is {}'s {}. birthday.",
+            if color { Style::new().bold().paint(unwrapped.name).to_string() } else { unwrapped.name },
+            dt.year() - unwrapped.date.year()
+        );
     };
 
     Ok(format!(""))
@@ -38,7 +44,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(show_dashboard(&conn).is_ok());
+        assert!(show_dashboard(&conn, false).is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
     }
