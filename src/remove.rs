@@ -65,7 +65,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(add_entry(&conn, "01-01-1900", "Marc", false).is_ok());
+        assert!(add_entry(&conn, "01-01-1900", "Marc", false, "%d-%m-%Y").is_ok());
         assert!(remove_entry(&conn, "John", false).is_err());
 
         env::remove_var("RUSDAY_DB_PATH");
@@ -76,7 +76,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(add_entry(&conn, "01-01-1900", "Marc", false).is_ok());
+        assert!(add_entry(&conn, "01-01-1900", "Marc", false, "%d-%m-%Y").is_ok());
         assert!(remove_entry(&conn, "Marc", false).is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");

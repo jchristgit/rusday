@@ -8,8 +8,8 @@ use chrono::NaiveDate;
 use common::Person;
 use rusqlite::Connection;
 
-pub fn add_entry(conn: &Connection, date: &str, name: &str, color: bool) -> Result<String, String> {
-    let naive_date = NaiveDate::parse_from_str(date, "%d-%m-%Y").unwrap();
+pub fn add_entry(conn: &Connection, date: &str, name: &str, color: bool, date_fmt: &str) -> Result<String, String> {
+    let naive_date = NaiveDate::parse_from_str(date, date_fmt).unwrap();
     let new_entry = Person::from_args(naive_date, name);
     conn.execute(
         "INSERT INTO person (date, name) VALUES (?1, ?2)",
@@ -45,7 +45,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(add_entry(&conn, "01-01-1990", "Marc", false).is_ok());
+        assert!(add_entry(&conn, "01-01-1990", "Marc", false, "%d-%m-%Y").is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
     }

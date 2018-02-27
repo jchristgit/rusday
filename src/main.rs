@@ -35,7 +35,15 @@ fn main() {
                         .help("the name of the person to add")
                         .required(true)
                         .empty_values(false),
-                ),
+                )
+                .arg(
+                    Arg::with_name("date_fmt")
+                        .help("specifies the formatting to be used with the `date` argument")
+                        .long_help("see https://docs.rs/chrono/0.4.0/chrono/format/strftime/index.html for a full reference")
+                        .short("d")
+                        .long("date_fmt")
+                        .default_value("%d-%m-%Y")
+                )
         )
         .subcommand(SubCommand::with_name("list").about("Shows a list of people in the database."))
         .subcommand(
@@ -66,7 +74,8 @@ fn main() {
             let matches = matches.subcommand_matches("add").unwrap();
             let date = matches.value_of("date").unwrap();
             let name = matches.value_of("name").unwrap();
-            add_entry(&conn, date, name, color)
+            let date_fmt = matches.value_of("date_fmt").unwrap();
+            add_entry(&conn, date, name, color, date_fmt)
         }
         Some("dashboard") => show_dashboard(&conn, color),
         Some("list") => list_entries(&conn, color),
