@@ -42,10 +42,21 @@ fn main() {
                         .long_help("see https://docs.rs/chrono/0.4.0/chrono/format/strftime/index.html for a full reference")
                         .short("d")
                         .long("date_fmt")
+                        .default_value("%Y-%m-%d")
+                )
+        )
+        .subcommand(
+            SubCommand::with_name("list")
+                .about("Shows a list of people in the database.")
+                .arg(
+                    Arg::with_name("date_fmt")
+                        .help("specifies the formatting to be used with the `date` argument")
+                        .long_help("see https://docs.rs/chrono/0.4.0/chrono/format/strftime/index.html for a full reference")
+                        .short("d")
+                        .long("date_fmt")
                         .default_value("%d-%m-%Y")
                 )
         )
-        .subcommand(SubCommand::with_name("list").about("Shows a list of people in the database."))
         .subcommand(
             SubCommand::with_name("dashboard")
                 .about("Shows a dashboard with the most relevant information."),
@@ -78,7 +89,11 @@ fn main() {
             add_entry(&conn, date, name, color, date_fmt)
         }
         Some("dashboard") => show_dashboard(&conn, color),
-        Some("list") => list_entries(&conn, color),
+        Some("list") => {
+            let matches = matches.subcommand_matches("list").unwrap();
+            let date_fmt = matches.value_of("date_fmt").unwrap();
+            list_entries(&conn, color, date_fmt)
+        }
         Some("remove") => {
             let matches = matches.subcommand_matches("remove").unwrap();
             remove_entry(&conn, matches.value_of("name").unwrap(), color)

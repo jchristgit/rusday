@@ -8,7 +8,13 @@ use chrono::NaiveDate;
 use common::Person;
 use rusqlite::Connection;
 
-pub fn add_entry(conn: &Connection, date: &str, name: &str, color: bool, date_fmt: &str) -> Result<String, String> {
+pub fn add_entry(
+    conn: &Connection,
+    date: &str,
+    name: &str,
+    color: bool,
+    date_fmt: &str,
+) -> Result<String, String> {
     let naive_date = NaiveDate::parse_from_str(date, date_fmt).unwrap();
     let new_entry = Person::from_args(naive_date, name);
     conn.execute(

@@ -6,7 +6,7 @@ use self::ansi_term::Style;
 use common::Person;
 use rusqlite::Connection;
 
-pub fn list_entries(conn: &Connection, color: bool) -> Result<String, String> {
+pub fn list_entries(conn: &Connection, color: bool, date_fmt: &str) -> Result<String, String> {
     let mut stmt = conn.prepare("SELECT id, date, name FROM person").unwrap();
     let person_iter = stmt.query_map(&[], |row| Person {
         id: row.get(0),
@@ -22,10 +22,10 @@ pub fn list_entries(conn: &Connection, color: bool) -> Result<String, String> {
                 Style::new().italic().prefix(),
                 person.name,
                 Style::new().italic().suffix(),
-                person.date
+                person.date.format(date_fmt)
             );
         } else {
-            println!("{:>30}: {}", person.name, person.date);
+            println!("{:>30}: {}", person.name, person.date.format(date_fmt));
         }
     }
 
@@ -43,7 +43,7 @@ mod tests {
         env::set_var("RUSDAY_DB_PATH", ":memory:");
         let conn = get_db_conn();
 
-        assert!(list_entries(&conn, false).is_ok());
+        assert!(list_entries(&conn, false, "%Y-%m-%d").is_ok());
 
         env::remove_var("RUSDAY_DB_PATH");
     }
