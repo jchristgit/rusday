@@ -23,7 +23,7 @@ to ensure I get informed about anyone's birthday when I open my Terminal.
 
 ```sh
 $ rusday help
-rusday 0.3.0
+rusday 0.5.0
 A CLI tool to help you remember your friends' birthdays.
 
 USAGE:
@@ -47,7 +47,7 @@ SUBCOMMANDS:
 ### Commands
 - `rusday help` gives the expected output showing the other commands.
 - `rusday add <DATE> <NAME>` is used to add someone to the database.
-`<DATE>` is expected to be in the format `dd-mm-yyyy`.
+`<DATE>` is expected to be in the format `dd-mm-yyyy`, but this can be customized with the `date_fmt` argument. See `rusday add --help` for details.
 - `rusday remove <NAME>` is used to remove someone from the database.
 It checks for an exact match of the name.
 - `rusday list` shows you everyone that's currently in the database, sorted by their birthdate.
