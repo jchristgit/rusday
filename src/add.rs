@@ -3,6 +3,7 @@ extern crate chrono;
 extern crate isatty;
 extern crate rusqlite;
 
+use self::ansi_term::Colour::Red;
 use self::ansi_term::Style;
 use chrono::NaiveDate;
 use common::Person;
@@ -15,19 +16,33 @@ pub fn add_entry(
     color: bool,
     date_fmt: &str,
 ) -> Result<String, String> {
-    let naive_date = NaiveDate::parse_from_str(date, date_fmt).unwrap();
-    let new_entry = Person::from_args(naive_date, name);
-    conn.execute(
-        "INSERT INTO person (date, name) VALUES (?1, ?2)",
-        &[&new_entry.date, &new_entry.name],
-    ).unwrap();
-    if color {
-        Ok(format!(
-            "Successfully added `{}` to the database.",
-            Style::new().bold().paint(name)
-        ))
+    if let Ok(naive_date) = NaiveDate::parse_from_str(date, date_fmt) {
+        let new_entry = Person::from_args(naive_date, name);
+        conn.execute(
+            "INSERT INTO person (date, name) VALUES (?1, ?2)",
+            &[&new_entry.date, &new_entry.name],
+        ).unwrap();
+        if color {
+            Ok(format!(
+                "Successfully added `{}` to the database.",
+                Style::new().bold().paint(name)
+            ))
+        } else {
+            Ok(format!("Successfully added `{}` to the database.", name))
+        }
     } else {
-        Ok(format!("Successfully added `{}` to the database.", name))
+        if color {
+            Err(format!(
+                    "{}: Failed to add `{}` due to a date parsing error. Are you sure it's formatted correctly?",
+                    Red.paint("error"),
+                    Style::new().bold().paint(name)
+           ))
+        } else {
+            Err(format!(
+                    "error: Failed to add `{}` due to a date parsing error. Are you sure it's formatted correctly?",
+                    name
+               ))
+        }
     }
 }
 
@@ -52,6 +67,16 @@ mod tests {
         let conn = get_db_conn();
 
         assert!(add_entry(&conn, "01-01-1990", "Marc", false, "%d-%m-%Y").is_ok());
+
+        env::remove_var("RUSDAY_DB_PATH");
+    }
+
+    #[test]
+    fn invalid_date_returns_err() {
+        env::set_var("RUSDAY_DB_PATH", ":memory:");
+        let conn = get_db_conn();
+
+        assert!(add_entry(&conn, "invalid-date", "Mike", false, "%d-%m-%Y").is_err());
 
         env::remove_var("RUSDAY_DB_PATH");
     }

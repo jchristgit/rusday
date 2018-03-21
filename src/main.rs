@@ -6,7 +6,7 @@ extern crate rusday;
 
 use clap::{App, Arg, SubCommand};
 use isatty::stdout_isatty;
-use rusday::{add_entry, get_db_conn, is_valid_date, list_entries, remove_entry, show_dashboard};
+use rusday::{add_entry, get_db_conn, list_entries, remove_entry, show_dashboard};
 
 fn main() {
     let matches = App::new("rusday")
@@ -25,10 +25,9 @@ fn main() {
                 .about("Adds someone to the database.")
                 .arg(
                     Arg::with_name("date")
-                        .help("a date string in the format dd-mm-yyyy")
+                        .help("a date string in the format specified for `date_fmt`")
                         .required(true)
                         .empty_values(false)
-                        .validator(is_valid_date),
                 )
                 .arg(
                     Arg::with_name("name")
@@ -42,7 +41,7 @@ fn main() {
                         .long_help("see https://docs.rs/chrono/0.4.0/chrono/format/strftime/index.html for a full reference")
                         .short("d")
                         .long("date_fmt")
-                        .default_value("%Y-%m-%d")
+                        .default_value("%d-%m-%Y")
                 )
         )
         .subcommand(

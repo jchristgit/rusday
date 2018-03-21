@@ -1,6 +1,6 @@
 [package]
 name = "rusday"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Johannes Christ <Johannes.christ@gmail.com>"]
 
 [dependencies]
