@@ -7,7 +7,7 @@ One may argue about the practical use of this, but I like to think that it's a n
 ### Installation
 Installation is easy thanks to `cargo`:
 ```sh
-$ cargo install --git https://github.com/Volcyy/rusday
+$ cargo install --git https://github.com/jchristgit/rusday
 ```
 Now, you're free to use `rusday`, given that you have `cargo`'s
 `bin` directory in your `$PATH`.
