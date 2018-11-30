@@ -22,7 +22,7 @@ be informed about who's birthday it is. I sticked that into my `~/.bash_login`
 to ensure I get informed about anyone's birthday when I open my Terminal.
 
 ```sh
-rusday 0.6.0
+rusday 0.6.1
 A CLI tool to help you remember your friends' birthdays.
 
 USAGE:

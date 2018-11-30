@@ -26,10 +26,14 @@ impl Person {
 fn get_db_path() -> PathBuf {
     match env::var_os("RUSDAY_DB_PATH") {
         Some(val) => PathBuf::from(val),
-        None => dirs::data_dir().expect(
-            "Could not determine data directory. \
-             Set the `RUSDAY_DB_PATH` environment variable.",
-        ),
+        None => {
+            let mut data_dir = dirs::data_dir().expect(
+                "Could not determine data directory. \
+                 Set the `RUSDAY_DB_PATH` environment variable.",
+            );
+            data_dir.push("rusday.db");
+            data_dir
+        }
     }
 }
 
