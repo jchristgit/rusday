@@ -49,8 +49,8 @@ pub fn add_entry(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
     use common::get_db_conn;
+    use std::env;
 
     #[test]
     fn person_from_args_as_expected() {

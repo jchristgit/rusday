@@ -1,5 +1,6 @@
 extern crate chrono;
 extern crate clap;
+extern crate dirs;
 extern crate rusqlite;
 
 pub mod add;

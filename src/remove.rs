@@ -46,9 +46,9 @@ pub fn remove_entry(conn: &Connection, name: &str, color: bool) -> Result<String
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
     use add::add_entry;
     use common::get_db_conn;
+    use std::env;
 
     #[test]
     fn returns_err_with_no_entries() {

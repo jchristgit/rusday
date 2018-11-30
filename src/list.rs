@@ -8,11 +8,12 @@ use rusqlite::Connection;
 
 pub fn list_entries(conn: &Connection, color: bool, date_fmt: &str) -> Result<String, String> {
     let mut stmt = conn.prepare("SELECT id, date, name FROM person").unwrap();
-    let person_iter = stmt.query_map(&[], |row| Person {
-        id: row.get(0),
-        date: row.get(1),
-        name: row.get(2),
-    }).unwrap();
+    let person_iter = stmt
+        .query_map(&[], |row| Person {
+            id: row.get(0),
+            date: row.get(1),
+            name: row.get(2),
+        }).unwrap();
     let mut persons: Vec<_> = person_iter.map(|r| r.unwrap()).collect();
     persons.sort_by_key(|p| p.date);
     for person in persons {

@@ -22,8 +22,7 @@ be informed about who's birthday it is. I sticked that into my `~/.bash_login`
 to ensure I get informed about anyone's birthday when I open my Terminal.
 
 ```sh
-$ rusday help
-rusday 0.5.0
+rusday 0.6.0
 A CLI tool to help you remember your friends' birthdays.
 
 USAGE:
@@ -59,5 +58,5 @@ Have an idea for a command? Open an issue and let me know!
 ### Configuration
 It's possible to configure the database path that `rusday` uses by setting the
 environment variable `RUSDAY_DB_PATH`. In case this isn't set, `rusday` will
-check for `XDG_DATA_HOME`, and store it in a file named `rusday.db` if present.
-By ´default, the database is stored in `~/.local/share/rusday.db`.
+uses [`dirs::data_dir`](https://docs.rs/dirs/1.0.4/dirs/fn.data_dir.html) to
+determine where to store its database file.

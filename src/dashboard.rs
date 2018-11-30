@@ -3,18 +3,19 @@ extern crate chrono;
 extern crate rusqlite;
 
 use self::ansi_term::Style;
-use common::Person;
 use chrono::prelude::*;
+use common::Person;
 use rusqlite::Connection;
 
 pub fn show_dashboard(conn: &Connection, color: bool) -> Result<String, String> {
     let dt = Local::now();
     let mut stmt = conn.prepare("SELECT id, date, name FROM person WHERE strftime('%d', date) = strftime('%d', ?1) AND strftime('%m', date) = strftime('%m', ?1)").unwrap();
-    let person_iter = stmt.query_map(&[&dt], |row| Person {
-        id: row.get(0),
-        date: row.get(1),
-        name: row.get(2),
-    }).unwrap();
+    let person_iter = stmt
+        .query_map(&[&dt], |row| Person {
+            id: row.get(0),
+            date: row.get(1),
+            name: row.get(2),
+        }).unwrap();
     for person in person_iter {
         let unwrapped = person.unwrap();
         println!(
@@ -33,9 +34,9 @@ pub fn show_dashboard(conn: &Connection, color: bool) -> Result<String, String> 
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use common::get_db_conn;
     use std::env;
-    use super::*;
 
     #[test]
     fn returns_ok_with_no_records() {
